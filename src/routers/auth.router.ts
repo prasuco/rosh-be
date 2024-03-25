@@ -55,21 +55,25 @@ authRouter.post("/signin", async (req, res) => {
       } else {
         const isCorrectPassword = await bcrypt.compare(
           parsed.data.password,
-          user.password
+          user.password,
         );
         if (!isCorrectPassword)
           return res.json({
             success: false,
             message: "incorrect password",
           });
-        const token = jwt.sign({id:user.id}, process.env.JWT_SECRET as string, {
-          expiresIn: "90d",
-        });
+        const token = jwt.sign(
+          { id: user.id },
+          process.env.JWT_SECRET as string,
+          {
+            expiresIn: "90d",
+          },
+        );
 
         res.status(200).json({ success: true, data: { token } });
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.json({
         success: false,
         message: "something went wrong",
