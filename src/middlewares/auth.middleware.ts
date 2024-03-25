@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 import { JwtPayload, verify } from "jsonwebtoken";
 
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
@@ -11,11 +12,13 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
       next();
     } else {
       return res
-        .status(401)
+        .status(StatusCodes.UNAUTHORIZED)
         .json({ error: false, message: "User is not authorized" });
     }
   } catch (error) {
-    res.status(401).json({ error: false, message: "User is not authorized" });
+    res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: false, message: "User is not authorized" });
   }
 };
 export default authMiddleware;

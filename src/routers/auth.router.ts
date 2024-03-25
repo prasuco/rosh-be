@@ -4,7 +4,7 @@ import { prisma } from "../../prisma/prisma";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import httpscode from "http-status-codes";
+import { StatusCodes } from "http-status-codes";
 export const authRouter = Router();
 
 authRouter.post("/signup", async (req, res) => {
@@ -18,7 +18,7 @@ authRouter.post("/signup", async (req, res) => {
   console.log(parsed);
   if (parsed.success != true) {
     // console.log('parsed', parsed.error.errors[parsed.error.errors.length - 1].message)
-    res.json({
+    res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
       message: parsed.error.errors[parsed.error.errors.length - 1].message,
     });
@@ -28,10 +28,14 @@ authRouter.post("/signup", async (req, res) => {
       const user = await prisma.user.create({
         data: { email: parsed.data.email, password: hashedPassword },
       });
-      res.json({ success: true, data: { message: "Sign Up Successful" } });
+      res
+        .status(StatusCodes.CREATED)
+        .json({ success: true, data: { message: "Sign Up Successful" } });
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError)
-        res.json({ success: false, message: "email already exists" });
+        res
+          .status(StatusCodes.CONFLICT)
+          .json({ success: false, message: "email already exists" });
     }
   }
 });
@@ -51,14 +55,16 @@ authRouter.post("/signin", async (req, res) => {
       });
 
       if (!user) {
-        res.status(400).json({ success: false, message: "user doesnot exist" });
+        res
+          .status(StatusCodes.NOT_FOUND)
+          .json({ success: false, message: "user doesnot exist" });
       } else {
         const isCorrectPassword = await bcrypt.compare(
           parsed.data.password,
           user.password,
         );
         if (!isCorrectPassword)
-          return res.json({
+          return res.status(StatusCodes.UNAUTHORIZED).json({
             success: false,
             message: "incorrect password",
           });
@@ -70,17 +76,17 @@ authRouter.post("/signin", async (req, res) => {
           },
         );
 
-        res.status(200).json({ success: true, data: { token } });
+        res.status(StatusCodes.OK).json({ success: true, data: { token } });
       }
     } catch (error) {
       console.log(error);
-      res.json({
+      res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         message: "something went wrong",
       });
     }
   } else {
-    res.json({
+    res.status(StatusCodes.BAD_REQUEST).json({
       success: false,
       message: parsed.error.errors[parsed.error.errors.length - 1].message,
     });
