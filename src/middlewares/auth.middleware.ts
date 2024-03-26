@@ -8,7 +8,7 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     if (token) {
       token = token.split(" ")[1];
       let user = verify(token, process.env.JWT_SECRET as string) as JwtPayload;
-      req.id = user;
+      req.id = user.id;
       next();
     } else {
       return res

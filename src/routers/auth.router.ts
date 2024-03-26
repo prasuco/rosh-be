@@ -61,7 +61,7 @@ authRouter.post("/signin", async (req, res) => {
       } else {
         const isCorrectPassword = await bcrypt.compare(
           parsed.data.password,
-          user.password,
+          user.password
         );
         if (!isCorrectPassword)
           return res.status(StatusCodes.UNAUTHORIZED).json({
@@ -73,7 +73,7 @@ authRouter.post("/signin", async (req, res) => {
           process.env.JWT_SECRET as string,
           {
             expiresIn: "90d",
-          },
+          }
         );
 
         res.status(StatusCodes.OK).json({ success: true, data: { token } });
