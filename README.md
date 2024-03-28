@@ -10,4 +10,4 @@
 - ORM : Prisma
 - Runtime : Nodejs
 - Language : Typescript/Javascript
-- Framework - Express.js
+- Framework : Express.js
