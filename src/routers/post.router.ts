@@ -7,7 +7,7 @@ export const postRouter = Router();
 
 postRouter.post("/", async (req, res) => {
   // TODO: Implement article creation
-  const { content, name, description} = req.body as Prisma.ArticleCreateInput;
+  const { content, name, description } = req.body as Prisma.ArticleCreateInput;
   try {
     const newArticle = await prisma.article.create({
       data: { content, description, name },
@@ -20,4 +20,18 @@ postRouter.post("/", async (req, res) => {
         .json({ success: false, message: error.message });
     }
   }
+});
+
+postRouter.delete("/:id", async (req, res) => {
+  const articleId = req.params.id;
+
+  const article = await prisma.article.findFirst({ where: { id: articleId } });
+  if (!article) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ success: false, message: "article not found" });
+  }
+
+  await prisma.article.delete({ where: { id: req.params.id } });
+  res.status(StatusCodes.OK).json({ success: true, data: article });
 });
