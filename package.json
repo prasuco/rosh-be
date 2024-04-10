@@ -2,7 +2,7 @@
   "name": "rosh-backend",
   "version": "1.0.0",
   "description": "Backend for rosh cms platform.",
-  "main": "dist/index.js",
+  "main": "src/index.ts",
   "scripts": {
     "build": "tsc --build",
     "start": "node dist/index.js",
