@@ -1,6 +1,11 @@
-import * as z from "zod"
-import { CONTENT_TYPE } from "@prisma/client"
-import { CompleteImage, relatedImageSchema, CompleteUser, relatedUserSchema } from "./index"
+import * as z from "zod";
+import { CONTENT_TYPE } from "@prisma/client";
+import {
+  CompleteImage,
+  relatedImageSchema,
+  CompleteUser,
+  relatedUserSchema,
+} from "./index";
 
 export const articleSchema = z.object({
   id: z.string(),
@@ -10,11 +15,11 @@ export const articleSchema = z.object({
   type: z.nativeEnum(CONTENT_TYPE),
   imageId: z.string().nullish(),
   userId: z.string().nullish(),
-})
+});
 
 export interface CompleteArticle extends z.infer<typeof articleSchema> {
-  image?: CompleteImage | null
-  User?: CompleteUser | null
+  image?: CompleteImage | null;
+  User?: CompleteUser | null;
 }
 
 /**
@@ -22,7 +27,9 @@ export interface CompleteArticle extends z.infer<typeof articleSchema> {
  *
  * NOTE: Lazy required in case of potential circular dependencies within schema
  */
-export const relatedArticleSchema: z.ZodSchema<CompleteArticle> = z.lazy(() => articleSchema.extend({
-  image: relatedImageSchema.nullish(),
-  User: relatedUserSchema.nullish(),
-}))
+export const relatedArticleSchema: z.ZodSchema<CompleteArticle> = z.lazy(() =>
+  articleSchema.extend({
+    image: relatedImageSchema.nullish(),
+    User: relatedUserSchema.nullish(),
+  }),
+);

@@ -35,3 +35,30 @@ postRouter.delete("/:id", async (req, res) => {
   await prisma.article.delete({ where: { id: req.params.id } });
   res.status(StatusCodes.OK).json({ success: true, data: article });
 });
+
+postRouter.patch("/meta/:id/", async (req, res) => {
+  const articleId = req.params.id;
+  const keysToBeEdited = req.body as Prisma.ArticleUpdateInput;
+
+  const article = await prisma.article.findFirst({ where: { id: articleId } });
+  if (!article) {
+    return res
+      .status(StatusCodes.NOT_FOUND)
+      .json({ success: false, message: "article not found" });
+  }
+
+  try {
+    const updatedArticle = await prisma.article.update({
+      where: { id: article.id },
+      data: keysToBeEdited,
+    });
+
+    res.status(StatusCodes.OK).json({ success: true, data: updatedArticle });
+  } catch (error) {
+    if (error instanceof PrismaClientValidationError) {
+      return res
+        .status(StatusCodes.NOT_FOUND)
+        .json({ success: false, message: error.message });
+    }
+  }
+});
