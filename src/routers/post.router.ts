@@ -10,7 +10,7 @@ postRouter.post("/", async (req, res) => {
   const { content, name, description } = req.body as Prisma.ArticleCreateInput;
   try {
     const newArticle = await prisma.article.create({
-      data: { content, description, name },
+      data: { content, description, name, userId: req.id as unknown as string },
     });
     res.status(StatusCodes.CREATED).json({ success: true, data: newArticle });
   } catch (error) {
