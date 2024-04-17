@@ -37,11 +37,12 @@ model Article {
 }
 
 model Image {
-  id       String    @id @default(cuid())
-  name     String
-  filePath String
-  url      String
-  Article  Article[]
+  id             String    @id @default(cuid())
+  name           String
+  filePath       String
+  url            String
+  isArticleImage Boolean   @default(true)
+  Article        Article[]
 }
 
 generator zod {

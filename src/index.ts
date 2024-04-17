@@ -1,14 +1,10 @@
-import express, {
-  ErrorRequestHandler,
-  NextFunction,
-  Request,
-  Response,
-} from "express";
+import express, { ErrorRequestHandler } from "express";
 import cors from "cors";
 import { authRouter } from "./routers/auth.router";
 import { postRouter } from "./routers/post.router";
 
 import authMiddleware from "./middlewares/auth.middleware";
+import { StatusCodes } from "http-status-codes";
 
 const app = express();
 
@@ -16,7 +12,9 @@ app.use(express.json());
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ success: false, message: "Something Broke" });
+  res
+    .status(StatusCodes.INTERNAL_SERVER_ERROR)
+    .json({ success: false, message: "Something Broke" });
 };
 
 app.use(globalErrorHandler);
@@ -35,5 +33,5 @@ app.use("/api/auth/", authRouter);
 app.use("/api/main/posts/", postRouter);
 
 app.listen(port, () => {
-  console.log(`🚀 Listening on port: localhost:${port} `);
+  console.log(`🚀 Listening on port: https://localhost:${port} `);
 });

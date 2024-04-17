@@ -6,6 +6,7 @@ export const imageSchema = z.object({
   name: z.string(),
   filePath: z.string(),
   url: z.string(),
+  isArticleImage: z.boolean(),
 })
 
 export interface CompleteImage extends z.infer<typeof imageSchema> {
